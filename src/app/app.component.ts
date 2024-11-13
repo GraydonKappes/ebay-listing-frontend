@@ -32,7 +32,11 @@ export class AppComponent {
   generateDescription() {
     this.http.post<{ description: string }>('/api/generate-description', { title: this.productTitle })
       .subscribe(response => {
-        this.generatedDescription = response.description;
+        if (response && response.description) {
+          this.generatedDescription = response.description;
+        } else {
+          console.error('No description returned from API');
+        }
         this.loadListings();
       }, error => {
         console.error('Error generating description:', error);
