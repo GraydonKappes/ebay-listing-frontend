@@ -57,12 +57,16 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 4200,
+            "open": true
+          },
           "configurations": {
             "production": {
-              "buildTarget": "ebay-listing-frontend:build:production"
+              "browserTarget": "ebay-listing-frontend:build:production"
             },
             "development": {
-              "buildTarget": "ebay-listing-frontend:build:development"
+              "browserTarget": "ebay-listing-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
