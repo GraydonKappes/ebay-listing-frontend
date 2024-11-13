@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -30,12 +30,23 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   generateDescription() {
-    this.http.post<{ description: string }>('/api/generate-description', { title: this.productTitle })
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer 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'
+    });
+
+    const body = {
+      model: "text-davinci-003",
+      prompt: `Generate a product description for: ${this.productTitle}`,
+      max_tokens: 100
+    };
+
+    this.http.post<any>('https://api.openai.com/v1/completions', body, { headers })
       .subscribe(response => {
-        if (response && response.description) {
-          this.generatedDescription = response.description;
+        if (response && response.choices && response.choices.length > 0) {
+          this.generatedDescription = response.choices[0].text.trim();
         } else {
-          console.error('No description returned from API');
+          console.error('No description returned from OpenAI API');
         }
         this.loadListings();
       }, error => {

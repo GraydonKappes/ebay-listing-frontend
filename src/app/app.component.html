@@ -201,6 +201,9 @@
           <small>Create Date: {{ listing.createDate }}</small>
           <small>Update Date: {{ listing.updateDate }}</small>
         </li>
+        <li *ngIf="listings.length === 0">
+          <p>No listings available. Please generate a description to add a new listing.</p>
+        </li>
       </ul>
     </div>
   </div>
