@@ -12,6 +12,14 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+interface Listing {
+  title: string;
+  description: string;
+  productId: string;
+  createDate: string;
+  updateDate: string;
+}
+
 export class AppComponent {
   title = 'ebay-listing-frontend';
   productTitle = '';
