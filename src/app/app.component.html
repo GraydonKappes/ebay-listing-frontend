@@ -188,7 +188,7 @@
       </form>
       <div *ngIf="generatedDescription">
         <h2>Generated Description</h2>
-        <p>{{ generatedDescription }}</p>
+        <textarea [(ngModel)]="generatedDescription" rows="4" cols="50"></textarea>
       </div>
     </div>
     <div class="right-side">

@@ -30,10 +30,12 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   generateDescription() {
-    this.http.post('/api/generate-description', { title: this.productTitle })
-      .subscribe((response: any) => {
+    this.http.post<{ description: string }>('/api/generate-description', { title: this.productTitle })
+      .subscribe(response => {
         this.generatedDescription = response.description;
         this.loadListings();
+      }, error => {
+        console.error('Error generating description:', error);
       });
   }
 
