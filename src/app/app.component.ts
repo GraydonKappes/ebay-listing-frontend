@@ -14,12 +14,12 @@ interface Listing {
 }
 
 @Component({
-  title: string;
-  description: string;
-  productId: string;
-  createDate: string;
-  updateDate: string;
-}
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, CommonModule, FormsModule],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
 
 export class AppComponent {
   title = 'ebay-listing-frontend';
