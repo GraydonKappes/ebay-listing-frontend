@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
-import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ListingFormComponent } from './components/listing-form/listing-form.component';
+import { ListingListComponent } from './components/listing-list/listing-list.component';
 
-interface Listing {
+export interface Listing {
   title: string;
   description: string;
   productId: string;
@@ -13,10 +16,41 @@ interface Listing {
   updateDate: string;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
+export class ListingService {
+  constructor(private http: HttpClient) {}
+
+  generateDescription(title: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer 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'
+    });
+
+    const body = {
+      model: "text-davinci-003",
+      prompt: `Generate a product description for: ${title}`,
+      max_tokens: 100
+    };
+
+    return this.http.post<any>('https://api.openai.com/v1/completions', body, { headers });
+  }
+
+  getListings(): Observable<Listing[]> {
+    return this.http.get<Listing[]>('/api/listings');
+  }
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ListingFormComponent,
+    ListingListComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -27,21 +61,10 @@ export class AppComponent {
   generatedDescription = '';
   listings: Listing[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private listingService: ListingService) {}
 
   generateDescription() {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer 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'
-    });
-
-    const body = {
-      model: "text-davinci-003",
-      prompt: `Generate a product description for: ${this.productTitle}`,
-      max_tokens: 100
-    };
-
-    this.http.post<any>('https://api.openai.com/v1/completions', body, { headers })
+    this.listingService.generateDescription(this.productTitle)
       .subscribe(response => {
         if (response && response.choices && response.choices.length > 0) {
           this.generatedDescription = response.choices[0].text.trim();
@@ -55,11 +78,16 @@ export class AppComponent {
   }
 
   loadListings() {
-    this.http.get<Listing[]>('/api/listings')
+    this.listingService.getListings()
       .subscribe(response => {
         this.listings = response;
       }, error => {
         console.error('Error loading listings:', error);
       });
+  }
+
+  handleDescriptionGenerated(description: string) {
+    this.generatedDescription = description;
+    this.loadListings();
   }
 }
