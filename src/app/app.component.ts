@@ -25,7 +25,7 @@ export class AppComponent {
   title = 'ebay-listing-frontend';
   productTitle = '';
   generatedDescription = '';
-  listings = [];
+  listings: Listing[] = [];
 
   constructor(private http: HttpClient) {}
 
