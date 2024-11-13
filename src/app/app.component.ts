@@ -40,9 +40,11 @@ export class AppComponent {
   }
 
   loadListings() {
-    this.http.get('/api/listings')
-      .subscribe((response: any) => {
+    this.http.get<Listing[]>('/api/listings')
+      .subscribe(response => {
         this.listings = response;
+      }, error => {
+        console.error('Error loading listings:', error);
       });
   }
 }

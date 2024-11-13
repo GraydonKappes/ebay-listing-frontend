@@ -181,7 +181,7 @@
   <div class="content">
     <div class="left-side">
       <h1>Super Duty Ford Trucks</h1>
-      <form (submit)="generateDescription()">
+      <form (ngSubmit)="generateDescription()">
         <label for="title">Enter Product Title:</label>
         <input type="text" id="title" [(ngModel)]="productTitle" name="title" required />
         <button type="submit">Generate Description</button>
