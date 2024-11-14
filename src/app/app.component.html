@@ -183,8 +183,17 @@
       <h1>Super Duty Ford Trucks</h1>
       <form (ngSubmit)="generateDescription()" #descriptionForm="ngForm">
         <label for="title">Enter Product Title:</label>
-        <input type="text" id="title" [(ngModel)]="productTitle" name="title" required />
-        <button type="submit">Generate Description</button>
+        <input 
+          type="text" 
+          id="title" 
+          [(ngModel)]="productTitle" 
+          name="title" 
+          required 
+          [disabled]="isLoading"
+        />
+        <button type="submit" [disabled]="!productTitle || isLoading">
+          {{ isLoading ? 'Generating...' : 'Generate Description' }}
+        </button>
       </form>
       <div *ngIf="generatedDescription">
         <h2>Generated Description</h2>
