@@ -1,10 +1,40 @@
 <main class="main">
   <div class="content">
-    <app-listing-form>
-    </app-listing-form>
-    
-    <app-listing-list
-      [listings]="listings">
-    </app-listing-list>
+    <div class="left-side">
+      <h1>Super Duty Ford Trucks</h1>
+      <form (ngSubmit)="generateDescription()" #descriptionForm="ngForm">
+        <label for="title">Enter Product Title:</label>
+        <input 
+          type="text" 
+          id="title" 
+          [(ngModel)]="productTitle" 
+          name="title" 
+          required 
+          [disabled]="isLoading"
+        />
+        <button type="submit" [disabled]="!productTitle || isLoading">
+          {{ isLoading ? 'Generating...' : 'Generate Description' }}
+        </button>
+      </form>
+      <div *ngIf="generatedDescription">
+        <h2>Generated Description</h2>
+        <textarea [(ngModel)]="generatedDescription" rows="4" cols="50"></textarea>
+      </div>
+    </div>
+    <div class="right-side">
+      <h2>Listings</h2>
+      <ul>
+        <li *ngFor="let listing of listings">
+          <h3>{{ listing.title }}</h3>
+          <p>{{ listing.description }}</p>
+          <small>Product ID: {{ listing.productId }}</small>
+          <small>Create Date: {{ listing.createDate }}</small>
+          <small>Update Date: {{ listing.updateDate }}</small>
+        </li>
+        <li *ngIf="listings.length === 0">
+          <p>No listings available. Please generate a description to add a new listing.</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </main>

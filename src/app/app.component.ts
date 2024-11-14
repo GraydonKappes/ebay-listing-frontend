@@ -60,29 +60,44 @@ export class AppComponent {
   productTitle = '';
   generatedDescription = '';
   listings: Listing[] = [];
+  isLoading = false;
 
   constructor(private listingService: ListingService) {}
 
   generateDescription() {
-    this.listingService.generateDescription(this.productTitle)
-      .subscribe(response => {
-        if (response && response.choices && response.choices.length > 0) {
-          this.generatedDescription = response.choices[0].text.trim();
-        } else {
-          console.error('No description returned from OpenAI API');
+    if (!this.productTitle) {
+      return;
+    }
+
+    this.isLoading = true;
+    const body = {
+      title: this.productTitle
+    };
+
+    this.http.post<{description: string}>('/api/generate-description', body)
+      .subscribe({
+        next: (response) => {
+          this.generatedDescription = response.description;
+          this.isLoading = false;
+          this.loadListings();
+        },
+        error: (error) => {
+          console.error('Error generating description:', error);
+          this.generatedDescription = 'Error generating description. Please try again.';
+          this.isLoading = false;
         }
-        this.loadListings();
-      }, error => {
-        console.error('Error generating description:', error);
       });
   }
 
   loadListings() {
-    this.listingService.getListings()
-      .subscribe(response => {
-        this.listings = response;
-      }, error => {
-        console.error('Error loading listings:', error);
+    this.http.get<Listing[]>('/api/listings')
+      .subscribe({
+        next: (response) => {
+          this.listings = response;
+        },
+        error: (error) => {
+          console.error('Error loading listings:', error);
+        }
       });
   }
 
